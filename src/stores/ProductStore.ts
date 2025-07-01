@@ -26,13 +26,20 @@ class ProductStore {
       minPrice: filters.minPrice,
       maxPrice: filters.maxPrice,
     };
-    const result = await apiStore.getProducts(params);
-    runInAction(() => {
-      this.products.push(...result.data);
-      this.page += 1;
-      this.hasMore = result.hasMore;
-      this.isLoading = false;
-    });
+    try {
+      const result = await apiStore.getProducts(params);
+      runInAction(() => {
+        this.products.push(...result.data);
+        this.page += 1;
+        this.hasMore = result.hasMore;
+      });
+    } catch (e) {
+      console.error('Failed to fetch products', e);
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
+    }
   }
 
   reset() {
