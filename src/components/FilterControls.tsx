@@ -16,12 +16,12 @@ export const FilterControls = observer(({ store }: Props) => {
   useEffect(() => {
     const p = new URLSearchParams(params.toString());
     store.hydrateFromSearch(p);
-  }, [params, store]);
+  }, [params]);
 
   useEffect(() => {
     const p = store.toSearchParams();
     router.replace('?' + p.toString());
-  }, [store.gender, store.type, store.search, store.minPrice, store.maxPrice, router, store]);
+  }, [store.gender, store.type, store.search, store.minPrice, store.maxPrice, router]);
 
   return (
     <div>

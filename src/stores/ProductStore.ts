@@ -17,7 +17,15 @@ class ProductStore {
   async fetchNextPage(filters: FilterStore) {
     if (this.isLoading || !this.hasMore) return;
     this.isLoading = true;
-    const params = { page: this.page, limit: this.limit, ...filters } as any;
+    const params = {
+      page: this.page,
+      limit: this.limit,
+      gender: filters.gender,
+      type: filters.type,
+      search: filters.search,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+    };
     const result = await apiStore.getProducts(params);
     runInAction(() => {
       this.products.push(...result.data);
