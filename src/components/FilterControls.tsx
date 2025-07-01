@@ -20,7 +20,7 @@ export const FilterControls = observer(({ store }: Props) => {
 
   useEffect(() => {
     const p = store.toSearchParams();
-    router.replace({ search: p.toString() });
+    router.replace('?' + p.toString());
   }, [store.gender, store.type, store.search, store.minPrice, store.maxPrice, router]);
 
   return (
