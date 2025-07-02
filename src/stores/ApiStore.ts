@@ -2,7 +2,7 @@ import axios, { AxiosAdapter, AxiosRequestConfig } from 'axios';
 import { fetchProducts } from '../api/fakeDb';
 import { Product, ProductSchema } from '../models/Product';
 
-const fakeAdapter: AxiosAdapter = async (config: AxiosRequestConfig) => {
+const fakeAdapter = async (config: AxiosRequestConfig) => {
   if (config.url === '/products' && config.method === 'get') {
     const params = config.params || {};
     const result = await fetchProducts({
@@ -26,7 +26,7 @@ const fakeAdapter: AxiosAdapter = async (config: AxiosRequestConfig) => {
 };
 
 class ApiStore {
-  private axios = axios.create({ adapter: fakeAdapter });
+  private axios = axios.create({ adapter: fakeAdapter as AxiosAdapter });
 
   async getProducts(params: Record<string, any>): Promise<{ data: Product[]; hasMore: boolean }> {
     const response = await this.axios.get('/products', { params });
