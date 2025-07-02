@@ -1,15 +1,14 @@
 'use client';
 
-import { observer } from 'mobx-react-lite';
-import { FilterStoreType } from '../stores/FilterStore';
+import { FilterHook } from '../hooks/useFilter';
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 interface Props {
-  store: FilterStoreType;
+  store: FilterHook;
 }
 
-export const FilterControls = observer(({ store }: Props) => {
+export const FilterControls = ({ store }: Props) => {
   const router = useRouter();
   const params = useSearchParams();
 
@@ -56,4 +55,4 @@ export const FilterControls = observer(({ store }: Props) => {
       />
     </div>
   );
-});
+};

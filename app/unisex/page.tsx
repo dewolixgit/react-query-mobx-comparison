@@ -1,13 +1,12 @@
 'use client';
 
 import { useEffect } from 'react';
-import { observer } from 'mobx-react-lite';
 import { FilterControls } from '../../src/components/FilterControls';
 import { ProductList } from '../../src/components/ProductList';
-import { filterStore } from '../../src/stores/FilterStore';
-import { productStore } from '../../src/stores/ProductStore';
+import { useFilter } from '../../src/hooks/useFilter';
 
-export default observer(function UnisexPage() {
+export default function UnisexPage() {
+  const filterStore = useFilter();
   useEffect(() => {
     filterStore.setGender('unisex');
   }, []);
@@ -16,7 +15,7 @@ export default observer(function UnisexPage() {
     <div>
       <h1>Unisex</h1>
       <FilterControls store={filterStore} />
-      <ProductList productStore={productStore} filterStore={filterStore} />
+      <ProductList filterStore={filterStore} />
     </div>
   );
-});
+}
