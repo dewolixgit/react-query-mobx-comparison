@@ -1,6 +1,13 @@
 import axios, { AxiosAdapter, AxiosRequestConfig } from 'axios';
-import { fetchProducts } from '../api/fakeDb';
+import {
+  fetchProducts,
+  fetchTrendingProducts,
+  fetchProductDetail,
+  fetchProductShops,
+  fetchSimilarProducts,
+} from '../api/fakeDb';
 import { Product, ProductSchema } from '../models/Product';
+import { z } from 'zod';
 
 const fakeAdapter = async (config: AxiosRequestConfig) => {
   if (config.url === '/products' && config.method === 'get') {
@@ -22,6 +29,52 @@ const fakeAdapter = async (config: AxiosRequestConfig) => {
       data: result,
     };
   }
+  if (config.url === '/trending' && config.method === 'get') {
+    const data = await fetchTrendingProducts();
+    return {
+      config,
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      data,
+    };
+  }
+  const productDetailMatch = config.url?.match(/^\/products\/(\d+)$/);
+  if (productDetailMatch && config.method === 'get') {
+    const id = Number(productDetailMatch[1]);
+    const data = await fetchProductDetail(id);
+    return {
+      config,
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      data,
+    };
+  }
+  const shopsMatch = config.url?.match(/^\/products\/(\d+)\/shops$/);
+  if (shopsMatch && config.method === 'get') {
+    const id = Number(shopsMatch[1]);
+    const data = await fetchProductShops(id);
+    return {
+      config,
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      data,
+    };
+  }
+  const similarMatch = config.url?.match(/^\/products\/(\d+)\/similar$/);
+  if (similarMatch && config.method === 'get') {
+    const id = Number(similarMatch[1]);
+    const data = await fetchSimilarProducts(id);
+    return {
+      config,
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      data,
+    };
+  }
   return Promise.reject(new Error(`No mock for ${config.url}`));
 };
 
@@ -35,6 +88,27 @@ class ApiStore {
       hasMore: response.data.hasMore as boolean,
     };
     return result;
+  }
+
+  async getTrendingProducts(): Promise<Product[]> {
+    const response = await this.axios.get('/trending');
+    return (response.data as unknown[]).map(item => ProductSchema.parse(item));
+  }
+
+  async getProductDetail(id: number): Promise<z.infer<typeof ProductSchema> & { description: string; image: string }> {
+    const response = await this.axios.get(`/products/${id}`);
+    const base = ProductSchema.parse(response.data);
+    return { ...base, description: response.data.description as string, image: response.data.image as string };
+  }
+
+  async getProductShops(id: number): Promise<string[]> {
+    const response = await this.axios.get(`/products/${id}/shops`);
+    return response.data as string[];
+  }
+
+  async getSimilarProducts(id: number): Promise<Product[]> {
+    const response = await this.axios.get(`/products/${id}/similar`);
+    return (response.data as unknown[]).map(item => ProductSchema.parse(item));
   }
 }
 
