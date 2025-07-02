@@ -6,16 +6,16 @@ import { ProductList } from '../../src/components/ProductList';
 import { useFilter } from '../../src/hooks/useFilter';
 
 export default function MenPage() {
-  const filterStore = useFilter();
+  const filters = useFilter();
   useEffect(() => {
-    filterStore.setGender('men');
+    filters.setGender('men');
   }, []);
 
   return (
     <div>
       <h1>Men</h1>
-      <FilterControls store={filterStore} />
-      <ProductList filterStore={filterStore} />
+      <FilterControls filters={filters} />
+      <ProductList filters={filters} />
     </div>
   );
 }

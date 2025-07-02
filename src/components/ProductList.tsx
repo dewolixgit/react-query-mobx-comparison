@@ -6,10 +6,10 @@ import { useProducts } from '../hooks/useProducts';
 import { useFavorites } from '../hooks/useFavorites';
 
 interface Props {
-  filterStore: FilterHook;
+  filters: FilterHook;
 }
 
-export const ProductList = ({ filterStore }: Props) => {
+export const ProductList = ({ filters }: Props) => {
   const sentinel = useRef<HTMLDivElement | null>(null);
   const favorites = useFavorites();
 
@@ -18,7 +18,7 @@ export const ProductList = ({ filterStore }: Props) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useProducts(filterStore);
+  } = useProducts(filters);
 
   const products = data?.pages.flatMap(p => p.data) || [];
 

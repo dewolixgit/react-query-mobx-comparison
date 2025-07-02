@@ -6,12 +6,12 @@ import { ProductList } from '../src/components/ProductList';
 import { useFilter } from '../src/hooks/useFilter';
 
 export default function HomePage() {
-  const filterStore = useFilter();
+  const filters = useFilter();
   return (
     <div>
       <h1>Clothing Store</h1>
-      <FilterControls store={filterStore} />
-      <ProductList filterStore={filterStore} />
+      <FilterControls filters={filters} />
+      <ProductList filters={filters} />
     </div>
   );
 }
