@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { productDetailStore } from '../../../src/stores/ProductDetailStore';
+import { favoriteStore } from '../../../src/stores/FavoriteStore';
 
 export default observer(function ProductDetailPage() {
   const params = useParams();
@@ -23,6 +24,9 @@ export default observer(function ProductDetailPage() {
   return (
     <div>
       <h1>{product!.name}</h1>
+      <button onClick={() => favoriteStore.toggle(product!.id)}>
+        {favoriteStore.isFavorite(product!.id) ? '★' : '☆'}
+      </button>
       <img src={product!.image} alt={product!.name} />
       <p>{product!.description}</p>
       <h3>Available at:</h3>

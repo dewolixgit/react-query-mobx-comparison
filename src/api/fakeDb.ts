@@ -28,7 +28,7 @@ for (let i = 1; i <= 50; i++) {
 const productDetails: FakeProductDetail[] = products.map(p => ({
   ...p,
   description: `Description for ${p.name}`,
-  image: `https://via.placeholder.com/300?text=${encodeURIComponent(p.name)}`,
+  image: `https://placehold.co/600x400?text=${encodeURIComponent(p.name)}`,
 }));
 
 export function fetchProducts(params: {
