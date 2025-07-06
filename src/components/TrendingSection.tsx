@@ -18,7 +18,12 @@ export const TrendingSection = observer(() => {
       <div className="product-grid">
         {trendingStore.items.map(p => (
           <Link href={`/product/${p.id}`} key={p.id} className="product-card">
-            <img src="https://placehold.co/600x400" alt={p.name} />
+            <img
+              src="https://placehold.co/600x400"
+              alt={p.name}
+              width={200}
+              height={133}
+            />
             <div>{p.name}</div>
             <div>${p.price}</div>
           </Link>

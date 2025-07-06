@@ -27,7 +27,7 @@ export default observer(function ProductDetailPage() {
       <button onClick={() => favoriteStore.toggle(product!.id)}>
         {favoriteStore.isFavorite(product!.id) ? '★' : '☆'}
       </button>
-      <img src={product!.image} alt={product!.name} />
+      <img src={product!.image} alt={product!.name} width={600} height={400} />
       <p>{product!.description}</p>
       <h3>Available at:</h3>
       <ul>
