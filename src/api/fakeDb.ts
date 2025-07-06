@@ -15,7 +15,7 @@ const products: FakeProduct[] = [];
 
 for (let i = 1; i <= 50; i++) {
   const gender = i % 3 === 0 ? 'men' : i % 3 === 1 ? 'women' : 'unisex';
-  const type = ['t-shirt', 'pants', 'dress'][i % 3];
+  const type = ['t-shirt', 'trousers', 'dress'][i % 3];
   products.push({
     id: i,
     name: `${gender} ${type} ${i}`,
