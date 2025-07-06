@@ -6,6 +6,11 @@ export interface FakeProduct {
   gender: 'men' | 'women' | 'unisex';
 }
 
+export interface FakeProductDetail extends FakeProduct {
+  description: string;
+  image: string;
+}
+
 const products: FakeProduct[] = [];
 
 for (let i = 1; i <= 50; i++) {
@@ -19,6 +24,12 @@ for (let i = 1; i <= 50; i++) {
     gender,
   });
 }
+
+const productDetails: FakeProductDetail[] = products.map(p => ({
+  ...p,
+  description: `Description for ${p.name}`,
+  image: `https://placehold.co/600x400?text=${encodeURIComponent(p.name)}`,
+}));
 
 export function fetchProducts(params: {
   page: number;
@@ -42,4 +53,26 @@ export function fetchProducts(params: {
   const data = result.slice(start, end);
   const hasMore = end < result.length;
   return Promise.resolve({ data, hasMore });
+}
+
+export function fetchTrendingProducts() {
+  return Promise.resolve(products.slice(0, 5));
+}
+
+export function fetchProductDetail(id: number) {
+  const detail = productDetails.find(p => p.id === id);
+  if (!detail) throw new Error('Product not found');
+  return Promise.resolve(detail);
+}
+
+export function fetchProductShops(id: number) {
+  const shops = ['Fashion Co', 'Style Hub', 'Clothing Store'].map(s => `${s} #${id}`);
+  return Promise.resolve(shops);
+}
+
+export function fetchSimilarProducts(id: number) {
+  const product = products.find(p => p.id === id);
+  if (!product) return Promise.resolve([]);
+  const similar = products.filter(p => p.type === product.type && p.id !== id).slice(0, 3);
+  return Promise.resolve(similar);
 }
