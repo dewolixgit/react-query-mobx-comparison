@@ -13,6 +13,7 @@ export default observer(function ProductDetailPage() {
 
   useEffect(() => {
     productDetailStore.fetchProduct(id);
+    favoriteStore.fetchFavorites();
     return () => productDetailStore.clear();
   }, [id]);
 

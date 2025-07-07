@@ -5,6 +5,9 @@ import {
   fetchProductDetail,
   fetchProductShops,
   fetchSimilarProducts,
+  fetchFavorites,
+  addFavorite,
+  removeFavorite,
 } from '../api/fakeDb';
 import { Product, ProductSchema, ProductDetailSchema } from '../models/Product';
 import { z } from 'zod';
@@ -31,6 +34,39 @@ const fakeAdapter = async (config: AxiosRequestConfig) => {
   }
   if (config.url === '/trending' && config.method === 'get') {
     const data = await fetchTrendingProducts();
+    return {
+      config,
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      data,
+    };
+  }
+  if (config.url === '/favorites' && config.method === 'get') {
+    const data = await fetchFavorites();
+    return {
+      config,
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      data,
+    };
+  }
+  const favoriteMatch = config.url?.match(/^\/favorites\/(\d+)$/);
+  if (favoriteMatch && config.method === 'post') {
+    const id = Number(favoriteMatch[1]);
+    const data = await addFavorite(id);
+    return {
+      config,
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      data,
+    };
+  }
+  if (favoriteMatch && config.method === 'delete') {
+    const id = Number(favoriteMatch[1]);
+    const data = await removeFavorite(id);
     return {
       config,
       status: 200,
@@ -108,6 +144,21 @@ class ApiStore {
   async getSimilarProducts(id: number): Promise<Product[]> {
     const response = await this.axios.get(`/products/${id}/similar`);
     return (response.data as unknown[]).map(item => ProductSchema.parse(item));
+  }
+
+  async getFavorites(): Promise<number[]> {
+    const response = await this.axios.get('/favorites');
+    return response.data as number[];
+  }
+
+  async addFavorite(id: number): Promise<number[]> {
+    const response = await this.axios.post(`/favorites/${id}`);
+    return response.data as number[];
+  }
+
+  async removeFavorite(id: number): Promise<number[]> {
+    const response = await this.axios.delete(`/favorites/${id}`);
+    return response.data as number[];
   }
 }
 

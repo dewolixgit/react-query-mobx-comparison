@@ -76,3 +76,20 @@ export function fetchSimilarProducts(id: number) {
   const similar = products.filter(p => p.type === product.type && p.id !== id).slice(0, 3);
   return Promise.resolve(similar);
 }
+
+// --- favorites API ---
+const favorites = new Set<number>();
+
+export function fetchFavorites() {
+  return Promise.resolve(Array.from(favorites));
+}
+
+export function addFavorite(id: number) {
+  favorites.add(id);
+  return Promise.resolve(Array.from(favorites));
+}
+
+export function removeFavorite(id: number) {
+  favorites.delete(id);
+  return Promise.resolve(Array.from(favorites));
+}
