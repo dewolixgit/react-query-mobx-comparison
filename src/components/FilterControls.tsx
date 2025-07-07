@@ -33,7 +33,7 @@ export const FilterControls = observer(({ store }: Props) => {
       <select value={store.type || ''} onChange={e => store.setType(e.target.value || undefined)}>
         <option value="">All Types</option>
         <option value="t-shirt">T-Shirts</option>
-        <option value="pants">Pants</option>
+        <option value="trousers">Trousers</option>
         <option value="dress">Dresses</option>
       </select>
       <select value={store.gender || ''} onChange={e => store.setGender(e.target.value || undefined)}>

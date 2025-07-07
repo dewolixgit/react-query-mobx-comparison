@@ -2,6 +2,7 @@
 
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { ProductStoreType } from '../stores/ProductStore';
 import { FilterStoreType } from '../stores/FilterStore';
 import { favoriteStore } from '../stores/FavoriteStore';
@@ -34,7 +35,7 @@ export const ProductList = observer(({ productStore, filterStore }: Props) => {
       <div className="product-grid">
         {productStore.products.map(p => (
           <div key={p.id} className="product-card">
-            <div>{p.name}</div>
+            <Link href={`/product/${p.id}`}>{p.name}</Link>
             <div>${p.price}</div>
             <button onClick={() => favoriteStore.toggle(p.id)}>
               {favoriteStore.isFavorite(p.id) ? '★' : '☆'}

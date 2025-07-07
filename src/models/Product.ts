@@ -9,3 +9,10 @@ export const ProductSchema = z.object({
 });
 
 export type Product = z.infer<typeof ProductSchema>;
+
+export const ProductDetailSchema = ProductSchema.extend({
+  description: z.string(),
+  image: z.string().url(),
+});
+
+export type ProductDetail = z.infer<typeof ProductDetailSchema>;
