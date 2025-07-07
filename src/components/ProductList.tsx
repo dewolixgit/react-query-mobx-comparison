@@ -21,6 +21,10 @@ export const ProductList = observer(({ productStore, filterStore }: Props) => {
   }, [filterStore.gender, filterStore.type, filterStore.search, filterStore.minPrice, filterStore.maxPrice]);
 
   useEffect(() => {
+    favoriteStore.fetchFavorites();
+  }, []);
+
+  useEffect(() => {
     const ob = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
         productStore.fetchNextPage(filterStore);
