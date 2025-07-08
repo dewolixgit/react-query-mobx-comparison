@@ -5,7 +5,8 @@ import { Filters } from '../contexts/FilterContext';
 export function useProducts(filters: Filters) {
   return useInfiniteQuery({
     queryKey: ['products', filters],
-    queryFn: async ({ pageParam = 1 }) => {
+    initialPageParam: 1,
+    queryFn: async ({ pageParam }) => {
       const result = await fetchProducts({
         page: pageParam,
         limit: 10,
