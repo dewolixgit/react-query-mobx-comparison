@@ -1,42 +1,47 @@
 'use client';
 
-import { observer } from 'mobx-react-lite';
-import { FilterStoreType } from '../stores/FilterStore';
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useFilters } from '../contexts/FilterContext';
 
-interface Props {
-  store: FilterStoreType;
-}
-
-export const FilterControls = observer(({ store }: Props) => {
+export const FilterControls = () => {
+  const filters = useFilters();
   const router = useRouter();
   const params = useSearchParams();
 
   useEffect(() => {
     const p = new URLSearchParams(params.toString());
-    store.hydrateFromSearch(p);
+    filters.setGender(p.get('gender') || undefined);
+    filters.setType(p.get('type') || undefined);
+    filters.setSearch(p.get('search') || '');
+    filters.setMinPrice(p.get('minPrice') ? Number(p.get('minPrice')) : undefined);
+    filters.setMaxPrice(p.get('maxPrice') ? Number(p.get('maxPrice')) : undefined);
   }, [params]);
 
   useEffect(() => {
-    const p = store.toSearchParams();
+    const p = new URLSearchParams();
+    if (filters.gender) p.set('gender', filters.gender);
+    if (filters.type) p.set('type', filters.type);
+    if (filters.search) p.set('search', filters.search);
+    if (filters.minPrice != null) p.set('minPrice', String(filters.minPrice));
+    if (filters.maxPrice != null) p.set('maxPrice', String(filters.maxPrice));
     router.replace('?' + p.toString());
-  }, [store.gender, store.type, store.search, store.minPrice, store.maxPrice, router]);
+  }, [filters.gender, filters.type, filters.search, filters.minPrice, filters.maxPrice, router]);
 
   return (
     <div>
       <input
         placeholder="Search"
-        value={store.search}
-        onChange={e => store.setSearch(e.target.value)}
+        value={filters.search}
+        onChange={e => filters.setSearch(e.target.value)}
       />
-      <select value={store.type || ''} onChange={e => store.setType(e.target.value || undefined)}>
+      <select value={filters.type || ''} onChange={e => filters.setType(e.target.value || undefined)}>
         <option value="">All Types</option>
         <option value="t-shirt">T-Shirts</option>
         <option value="trousers">Trousers</option>
         <option value="dress">Dresses</option>
       </select>
-      <select value={store.gender || ''} onChange={e => store.setGender(e.target.value || undefined)}>
+      <select value={filters.gender || ''} onChange={e => filters.setGender(e.target.value || undefined)}>
         <option value="">All Genders</option>
         <option value="men">Men</option>
         <option value="women">Women</option>
@@ -45,15 +50,15 @@ export const FilterControls = observer(({ store }: Props) => {
       <input
         type="number"
         placeholder="Min Price"
-        value={store.minPrice ?? ''}
-        onChange={e => store.setMinPrice(e.target.value ? Number(e.target.value) : undefined)}
+        value={filters.minPrice ?? ''}
+        onChange={e => filters.setMinPrice(e.target.value ? Number(e.target.value) : undefined)}
       />
       <input
         type="number"
         placeholder="Max Price"
-        value={store.maxPrice ?? ''}
-        onChange={e => store.setMaxPrice(e.target.value ? Number(e.target.value) : undefined)}
+        value={filters.maxPrice ?? ''}
+        onChange={e => filters.setMaxPrice(e.target.value ? Number(e.target.value) : undefined)}
       />
     </div>
   );
-});
+};

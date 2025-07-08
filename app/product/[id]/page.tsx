@@ -1,35 +1,29 @@
 'use client';
 
-import { useEffect } from 'react';
-import { observer } from 'mobx-react-lite';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { productDetailStore } from '../../../src/stores/ProductDetailStore';
-import { favoriteStore } from '../../../src/stores/FavoriteStore';
+import { useProductDetail } from '../../../src/hooks/useProductDetail';
+import { useFavorites } from '../../../src/hooks/useFavorites';
 
-export default observer(function ProductDetailPage() {
+export default function ProductDetailPage() {
   const params = useParams();
   const id = Number(params.id);
 
-  useEffect(() => {
-    productDetailStore.fetchProduct(id);
-    favoriteStore.fetchFavorites();
-    return () => productDetailStore.clear();
-  }, [id]);
+  const { data, isLoading } = useProductDetail(id);
+  const { toggle, isFavorite } = useFavorites();
 
-  if (productDetailStore.isLoading || !productDetailStore.product)
-    return <div>Loading...</div>;
+  if (isLoading || !data) return <div>Loading...</div>;
 
-  const { product, shops, similar } = productDetailStore;
+  const { detail: product, shops, similar } = data;
 
   return (
     <div>
-      <h1>{product!.name}</h1>
-      <button onClick={() => favoriteStore.toggle(product!.id)}>
-        {favoriteStore.isFavorite(product!.id) ? '★' : '☆'}
+      <h1>{product.name}</h1>
+      <button onClick={() => toggle(product.id)}>
+        {isFavorite(product.id) ? '★' : '☆'}
       </button>
-      <img src={product!.image} alt={product!.name} width={600} height={400} />
-      <p>{product!.description}</p>
+      <img src={product.image} alt={product.name} width={600} height={400} />
+      <p>{product.description}</p>
       <h3>Available at:</h3>
       <ul>
         {shops.map((s, i) => (
@@ -47,4 +41,4 @@ export default observer(function ProductDetailPage() {
       </div>
     </div>
   );
-});
+}

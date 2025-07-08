@@ -1,54 +1,47 @@
 'use client';
 
-import { observer } from 'mobx-react-lite';
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { ProductStoreType } from '../stores/ProductStore';
-import { FilterStoreType } from '../stores/FilterStore';
-import { favoriteStore } from '../stores/FavoriteStore';
+import { useFavorites } from '../hooks/useFavorites';
+import { useFilters } from '../contexts/FilterContext';
+import { useProducts } from '../hooks/useProducts';
 
-interface Props {
-  productStore: ProductStoreType;
-  filterStore: FilterStoreType;
-}
-
-export const ProductList = observer(({ productStore, filterStore }: Props) => {
+export const ProductList = () => {
+  const filters = useFilters();
+  const { toggle, isFavorite } = useFavorites();
+  const {
+    data,
+    fetchNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useProducts(filters);
   const sentinel = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    productStore.reset();
-    productStore.fetchNextPage(filterStore);
-  }, [filterStore.gender, filterStore.type, filterStore.search, filterStore.minPrice, filterStore.maxPrice]);
-
-  useEffect(() => {
-    favoriteStore.fetchFavorites();
-  }, []);
 
   useEffect(() => {
     const ob = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
-        productStore.fetchNextPage(filterStore);
+        fetchNextPage();
       }
     });
     if (sentinel.current) ob.observe(sentinel.current);
     return () => ob.disconnect();
-  }, [productStore, filterStore]);
+  }, [fetchNextPage]);
 
   return (
     <div>
       <div className="product-grid">
-        {productStore.products.map(p => (
+        {data?.pages.flatMap(page => page.data).map(p => (
           <div key={p.id} className="product-card">
             <Link href={`/product/${p.id}`}>{p.name}</Link>
             <div>${p.price}</div>
-            <button onClick={() => favoriteStore.toggle(p.id)}>
-              {favoriteStore.isFavorite(p.id) ? '★' : '☆'}
+            <button onClick={() => toggle(p.id)}>
+              {isFavorite(p.id) ? '★' : '☆'}
             </button>
           </div>
         ))}
       </div>
-      {productStore.isLoading && <div>Loading...</div>}
+      {(isLoading || isFetchingNextPage) && <div>Loading...</div>}
       <div ref={sentinel} />
     </div>
   );
-});
+};
