@@ -1,19 +1,17 @@
 import './globals.css';
 import { ReactNode } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Providers from './providers';
 import { FilterProvider } from '../src/contexts/FilterContext';
-
-const queryClient = new QueryClient();
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <QueryClientProvider client={queryClient}>
+        <Providers>
           <FilterProvider>
             <main>{children}</main>
           </FilterProvider>
-        </QueryClientProvider>
+        </Providers>
       </body>
     </html>
   );
